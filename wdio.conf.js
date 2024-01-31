@@ -3,7 +3,6 @@ export const config = {
   port: 4723,
   hostname: "localhost",
   path: "/wd/hub",
-
   specs: ["./src/test_scripts/**/*.js"],
   // Patterns to exclude.
   exclude: ["./src/test_scripts/"],

@@ -6,6 +6,8 @@ import SearchResultsPage from "../page_objects/google/ReultPage";
 
 import ElfiePage from "../page_objects/elfie";
 
+import allureReporter from "@wdio/allure-reporter";
+
 describe("Google Search Automation", () => {
   let client;
 
@@ -33,7 +35,10 @@ describe("Google Search Automation", () => {
     const elfiePage = new ElfiePage(client);
 
     await client.url("https://www.google.com/");
+    allureReporter.addStep(`Input key`);
     await googleSearchPage.search("Elfie");
+    allureReporter.addStep("Click on search");
+
     await searchResultsPage.clickFirstResult();
 
     // 4.1. Verify the Logo should be displayed and capture image at this step.
