@@ -9,4 +9,4 @@ class SearchResultsPage {
   }
 }
 
-export default new SearchResultsPage();
+export default SearchResultsPage;

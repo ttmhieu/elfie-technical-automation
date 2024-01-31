@@ -1,0 +1,8 @@
+[
+  {
+    "searchKeyword": "Elfie",
+    "expectedLogoDisplayed": true,
+    "expectedXButtonDisplayed": true,
+    "expectedCopyrightTextDisplayed": true
+  }
+]

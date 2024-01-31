@@ -10,4 +10,4 @@ class GoogleSearchPage {
   }
 }
 
-export default new GoogleSearchPage();
+export default GoogleSearchPage;

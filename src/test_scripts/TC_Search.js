@@ -7,6 +7,7 @@ import SearchResultsPage from "../page_objects/google/ReultPage";
 import ElfiePage from "../page_objects/elfie";
 
 import allureReporter from "@wdio/allure-reporter";
+import testData from "../test_data/TC_Search.json";
 
 describe("Google Search Automation", () => {
   let client;
@@ -29,44 +30,66 @@ describe("Google Search Automation", () => {
     await client.deleteSession();
   });
 
-  it("should search for Elfie and verify elements on Elfie page", async () => {
-    const googleSearchPage = new GoogleSearchPage(client);
-    const searchResultsPage = new SearchResultsPage(client);
-    const elfiePage = new ElfiePage(client);
+  testData.forEach((data, index) => {
+    it(`Test Case ${index + 1}: Search for "${
+      data.searchKeyword
+    }" and verify elements on Elfie page`, async () => {
+      const googleSearchPage = new GoogleSearchPage(client);
+      const searchResultsPage = new SearchResultsPage(client);
+      const elfiePage = new ElfiePage(client);
 
-    await client.url("https://www.google.com/");
-    allureReporter.addStep(`Input key`);
-    await googleSearchPage.search("Elfie");
-    allureReporter.addStep("Click on search");
+      allure.feature("Google Search");
+      allure.story("Elfie Page");
+      allure.label("severity", "critical");
+      allure.description(
+        `Test Case ${index + 1}: Search for "${
+          data.searchKeyword
+        }" and verify elements on Elfie page`
+      );
 
-    await searchResultsPage.clickFirstResult();
+      await client.url("https://www.google.com/");
+      await googleSearchPage.search(data.searchKeyword);
+      await searchResultsPage.clickFirstResult();
 
-    // 4.1. Verify the Logo should be displayed and capture image at this step.
-    const isLogoDisplayed = await elfiePage.isLogoDisplayed();
-    expect(isLogoDisplayed).to.be.true;
+      allure.step(
+        "Verify the Logo should be displayed and capture image at this step.",
+        async () => {
+          const isLogoDisplayed = await elfiePage.isLogoDisplayed();
+          expect(isLogoDisplayed).to.equal(data.expectedLogoDisplayed);
+          await elfiePage.captureScreenshot(`logo_verification_${index + 1}`);
+        }
+      );
 
-    await elfiePage.captureScreenshot("logo_verification");
+      allure.step(
+        'Click on Hamburger menu and verify that "hamburger" menu changes to "X" button',
+        async () => {
+          await elfiePage.clickHamburgerMenu();
+          const isXButtonDisplayed = await elfiePage.isXButtonDisplayed();
+          expect(isXButtonDisplayed).to.equal(data.expectedXButtonDisplayed);
+          await elfiePage.captureScreenshot(
+            `x_button_verification_${index + 1}`
+          );
+        }
+      );
 
-    // 4.2. Click on Hamburger menu
-    await elfiePage.clickHamburgerMenu();
-
-    // Verify that "hamburger" menu changes to "X" button
-    const isXButtonDisplayed = await elfiePage.isXButtonDisplayed();
-    expect(isXButtonDisplayed).to.be.true;
-
-    await elfiePage.captureScreenshot("x_button_verification");
-
-    // 4.3. Scroll into the bottom
-    await elfiePage.scrollDown();
-
-    // Verify the text "Copyright 2023 Elfie Pte. Ltd."
-    const isCopyrightTextDisplayed = await elfiePage.isCopyrightTextDisplayed();
-    expect(isCopyrightTextDisplayed).to.be.true;
-
-    await elfiePage.captureScreenshot("copyright_text_verification");
-    await elfiePage.checkElementScreenshot(
-      elfiePage.copyrightText,
-      "copyright_text_comparison"
-    );
+      allure.step(
+        'Scroll into the bottom and verify the text "Copyright 2023 Elfie Pte. Ltd."',
+        async () => {
+          await elfiePage.scrollDown();
+          const isCopyrightTextDisplayed =
+            await elfiePage.isCopyrightTextDisplayed();
+          expect(isCopyrightTextDisplayed).to.equal(
+            data.expectedCopyrightTextDisplayed
+          );
+          await elfiePage.captureScreenshot(
+            `copyright_text_verification_${index + 1}`
+          );
+          await elfiePage.checkElementScreenshot(
+            elfiePage.copyrightText,
+            `copyright_text_comparison_${index + 1}`
+          );
+        }
+      );
+    });
   });
 });
