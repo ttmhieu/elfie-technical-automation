@@ -1,22 +1,35 @@
+import { join } from "path";
+
 export const config = {
   runner: "local",
   port: 4723,
-  hostname: "localhost",
-  path: "/wd/hub",
+  // hostname: "localhost",
+  path: "/",
   specs: ["./src/test_scripts/**/*.js"],
   // Patterns to exclude.
-  exclude: ["./src/test_scripts/"],
+  // exclude: ["./src/test_scripts/"],
 
   //
   maxInstances: 10,
 
   capabilities: [
     {
+      // capabilities for local Appium web tests on an Android Emulator
       platformName: "Android",
-      automationName: "UiAutomator2",
-      deviceName: "emulator-5554",
-      appPackage: "com.android.chrome",
-      appActivity: "com.google.android.apps.chrome.Main",
+      browserName: "Chrome",
+      "appium:deviceName": "nightwatch-android-11",
+      "appium:udid": "emulator-5554",
+      "appium:platformVersion": "11.0",
+      "appium:automationName": "UiAutomator2",
+      "appium:app": join(
+        process.cwd(),
+        "apps/android.wdio.native.app.v1.0.8.apk"
+      ),
+      browserName: "Chrome",
+      chromeOptions: {
+        args: ["--no-sandbox", "--disable-extensions"],
+      },
+      chromeVersion: "83.0.4103",
     },
   ],
 
@@ -44,7 +57,15 @@ export const config = {
   // Services take over a specific job you don't want to take care of. They enhance
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
-  services: ["appium"],
+  services: [
+    [
+      "appium",
+      {
+        autoDownload: true,
+        chromedriverArgs: ["--version=83.0.4103"], // Adjust the version accordingly
+      },
+    ],
+  ],
 
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber
