@@ -17,13 +17,21 @@ describe("Google Search Automation", () => {
       capabilities: {
         platformName: "Android",
         appPackage: "com.android.chrome",
+        browserName: "Chrome",
         appActivity: "com.google.android.apps.chrome.Main",
-        automationName: "UiAutomator2",
-        deviceName: "emulator-5554",
-        browserName: "chrome",
-        maxInstances: 1,
-        platformVersion: "10.0",
-        orientation: "PORTRAIT",
+        "appium:deviceName": "nightwatch-android-11",
+        "appium:udid": "emulator-5554",
+        "appium:platformVersion": "11.0",
+        "appium:automationName": "UiAutomator2",
+        "appium:app": join(
+          process.cwd(),
+          "apps/android.wdio.native.app.v1.0.8.apk"
+        ),
+        browserName: "Chrome",
+        chromeOptions: {
+          args: ["--no-sandbox", "--disable-extensions"],
+        },
+        chromeVersion: "83.0.4103",
       },
       path: "/wd/hub",
       logLevel: "info",
